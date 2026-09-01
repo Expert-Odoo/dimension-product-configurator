@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <menuitem id="menu_dim_config_root"
+            name="Dimension Product Configurator"
+            sequence="51"
+            web_icon="dimension_product_configurator,static/description/icon.png"/>
+
+  <menuitem id="menu_cpq_products"
+            name="Configurable Products"
+            parent="menu_dim_config_root"
+            action="action_dim_product"
+            sequence="10"/>
+
+  <menuitem id="menu_cpq_configurations"
+            name="Configurations"
+            parent="menu_dim_config_root"
+            action="action_dim_configuration"
+            sequence="20"/>
+
+</odoo>

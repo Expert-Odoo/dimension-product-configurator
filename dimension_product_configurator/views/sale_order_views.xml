@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <record id="view_sale_order_form_cpq" model="ir.ui.view">
+    <field name="name">sale.order.form.cpq</field>
+    <field name="model">sale.order</field>
+    <field name="inherit_id" ref="sale.view_order_form"/>
+    <field name="arch" type="xml">
+
+      <xpath expr="//div[@name='button_box']" position="inside">
+        <button name="action_configure_dim_lines"
+                type="object"
+                class="oe_stat_button"
+                icon="fa-cog"
+                invisible="dim_line_count == 0">
+          <field name="dim_line_count" widget="statinfo" string="Configurable"/>
+        </button>
+        <button name="action_configure_dim_lines"
+                type="object"
+                class="oe_stat_button o_stat_button_danger"
+                icon="fa-exclamation-triangle"
+                invisible="dim_unconfigured_count == 0">
+          <field name="dim_unconfigured_count" widget="statinfo" string="to configure"/>
+        </button>
+      </xpath>
+
+      <xpath expr="//field[@name='partner_id']" position="before">
+        <field name="dim_line_count" invisible="1"/>
+        <field name="dim_unconfigured_count" invisible="1"/>
+      </xpath>
+
+      <xpath expr="//field[@name='order_line']//field[@name='display_type']" position="after">
+        <field name="is_dim_config" invisible="1"/>
+        <field name="dim_product_id" invisible="1"/>
+      </xpath>
+
+      <xpath expr="//field[@name='order_line']//div[@name='ordered_qty']" position="after">
+        <div name="dim_config_block" class="mt-2" invisible="not is_dim_config">
+          <div class="d-flex align-items-center gap-2 mt-1">
+            <button name="action_configure_dim"
+                    type="object"
+                    string="⚙ Configure product"
+                    class="btn btn-primary btn-sm"/>
+            <field name="dim_summary"
+                   readonly="1"
+                   placeholder="Not configured — click Configure"
+                   class="text-muted fst-italic flex-grow-1"/>
+          </div>
+        </div>
+      </xpath>
+
+    </field>
+  </record>
+
+</odoo>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <record id="view_cpq_configurator_wizard_form" model="ir.ui.view">
+    <field name="name">dimension_config.configurator.wizard.form</field>
+    <field name="model">dimension_config.configurator.wizard</field>
+    <field name="arch" type="xml">
+      <form>
+        <sheet style="max-width: 820px;">
+
+          <div class="oe_title mb-3">
+            <h2><field name="dim_product_id" readonly="1"/></h2>
+          </div>
+
+          <h5 class="mb-2" style="color: #888; font-weight: 500;">Configuration parameters</h5>
+
+          <field name="line_ids" nolabel="1">
+            <list editable="bottom" create="false" delete="false">
+              <field name="sequence"        column_invisible="1"/>
+              <field name="attribute_type"  column_invisible="1"/>
+              <field name="attribute_id"    column_invisible="1"/>
+              <field name="numeric_min"     column_invisible="1"/>
+              <field name="numeric_max"     column_invisible="1"/>
+              <field name="numeric_unit"    column_invisible="1"/>
+
+              <field name="attribute_label" readonly="1" string="Parameter"/>
+
+              <field name="value_list_id"
+                     invisible="attribute_type != 'list'"
+                     domain="[('attribute_id', '=', attribute_id)]"
+                     string="Choice"
+                     options="{'no_create': True, 'no_open': True}"/>
+
+              <field name="value_numeric"
+                     invisible="attribute_type != 'numeric'"
+                     string="Value"/>
+
+              <field name="value_boolean"
+                     invisible="attribute_type != 'boolean'"
+                     string="Included"
+                     widget="boolean_toggle"/>
+            </list>
+          </field>
+
+          <!-- Zone résultat : la métrique dépend du mode de tarification -->
+          <field name="price_mode" invisible="1"/>
+          <div class="mt-3 p-2 border rounded bg-view">
+            <div class="d-flex align-items-center gap-2" invisible="price_mode != 'per_kg'">
+              <strong>Weight:</strong>
+              <field name="weight_kg" readonly="1" nolabel="1" class="fw-bold"/>
+              <span class="text-muted">kg</span>
+            </div>
+            <div class="d-flex align-items-center gap-2" invisible="price_mode != 'per_m2'">
+              <strong>Area:</strong>
+              <field name="surface_m2" readonly="1" nolabel="1" class="fw-bold"/>
+              <span class="text-muted">m²</span>
+            </div>
+            <div class="d-flex align-items-center gap-2" invisible="price_mode != 'per_m3'">
+              <strong>Volume:</strong>
+              <field name="volume_m3" readonly="1" nolabel="1" class="fw-bold"/>
+              <span class="text-muted">m³</span>
+            </div>
+            <field name="price_breakdown" widget="text" readonly="1"
+                   class="mt-2 text-muted"
+                   style="font-family: monospace; font-size: 12px; white-space: pre; background: transparent; border: none;"/>
+          </div>
+
+        </sheet>
+        <footer>
+          <button name="action_confirm" type="object"
+                  string="Confirm configuration" class="btn-primary"/>
+          <button special="cancel"
+                  string="Cancel" class="btn-secondary"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+</odoo>

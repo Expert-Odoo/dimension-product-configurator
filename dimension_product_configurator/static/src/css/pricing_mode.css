@@ -1,0 +1,93 @@
+/* Dimension Product Configurator
+   Illustration de chaque mode de tarification, directement dans le choix radio.
+   Pur CSS : aucun widget JavaScript, le comportement natif du champ est conserve.
+   Si Odoo renomme .o_radio_item dans une version future, seules les vignettes
+   disparaissent ; les boutons radio continuent de fonctionner normalement. */
+
+.o_dim_pricing_mode .o_radio_item {
+    /* Colonne centree : le bouton radio se place au-dessus de la vignette
+       sans aucun calcul de decalage. Neutralise le padding-left de
+       Bootstrap sur .form-check, qui fausserait le centrage. */
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    vertical-align: top;
+    margin: 0 12px 8px 0;
+    padding-left: 0;
+}
+
+.o_dim_pricing_mode .o_radio_item .o_form_label {
+    display: block;
+    padding-top: 64px;
+    padding-left: 8px;
+    padding-right: 8px;
+    width: 152px;
+    min-height: 104px;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.25;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    padding-bottom: 6px;
+    background-repeat: no-repeat;
+    background-position: center 4px;
+    background-size: 80px 56px;
+    opacity: 0.55;
+    transition: opacity 0.15s ease-in-out;
+}
+
+.o_dim_pricing_mode .o_radio_item .o_form_label:hover {
+    opacity: 0.85;
+}
+
+/* Vignette par mode */
+.o_dim_pricing_mode .o_radio_input[data-value="per_m2"] + .o_form_label {
+    background-image: url("/dimension_product_configurator/static/src/img/mode_m2.svg");
+}
+.o_dim_pricing_mode .o_radio_input[data-value="per_m3"] + .o_form_label {
+    background-image: url("/dimension_product_configurator/static/src/img/mode_m3.svg");
+}
+.o_dim_pricing_mode .o_radio_input[data-value="per_kg"] + .o_form_label {
+    background-image: url("/dimension_product_configurator/static/src/img/mode_kg.svg");
+}
+.o_dim_pricing_mode .o_radio_input[data-value="per_linear"] + .o_form_label {
+    background-image: url("/dimension_product_configurator/static/src/img/mode_linear.svg");
+}
+.o_dim_pricing_mode .o_radio_input[data-value="fixed"] + .o_form_label {
+    background-image: url("/dimension_product_configurator/static/src/img/mode_fixed.svg");
+}
+
+/* Option selectionnee : vignette coloree et cadre */
+.o_dim_pricing_mode .o_radio_input:checked + .o_form_label {
+    opacity: 1;
+    font-weight: 600;
+    border-color: rgba(113, 75, 103, 0.55);
+    background-color: rgba(113, 75, 103, 0.06);
+}
+.o_dim_pricing_mode .o_radio_input[data-value="per_m2"]:checked + .o_form_label {
+    background-image: url("/dimension_product_configurator/static/src/img/mode_m2_on.svg");
+}
+.o_dim_pricing_mode .o_radio_input[data-value="per_m3"]:checked + .o_form_label {
+    background-image: url("/dimension_product_configurator/static/src/img/mode_m3_on.svg");
+}
+.o_dim_pricing_mode .o_radio_input[data-value="per_kg"]:checked + .o_form_label {
+    background-image: url("/dimension_product_configurator/static/src/img/mode_kg_on.svg");
+}
+.o_dim_pricing_mode .o_radio_input[data-value="per_linear"]:checked + .o_form_label {
+    background-image: url("/dimension_product_configurator/static/src/img/mode_linear_on.svg");
+}
+.o_dim_pricing_mode .o_radio_input[data-value="fixed"]:checked + .o_form_label {
+    background-image: url("/dimension_product_configurator/static/src/img/mode_fixed_on.svg");
+}
+
+/* Le bouton radio reste dans le flux, centre par le conteneur flex. */
+.o_dim_pricing_mode .o_radio_input {
+    position: static;
+    margin: 0 0 4px 0;
+    flex: none;
+}
+.o_dim_pricing_mode .o_radio_input:focus-visible + .o_form_label {
+    outline: 2px solid rgba(113, 75, 103, 0.75);
+    outline-offset: 2px;
+}

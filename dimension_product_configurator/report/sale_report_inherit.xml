@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <!-- Héritage rapport PDF devis — Odoo 19
+       Ajoute le détail de configuration CPQ sous chaque ligne configurable -->
+  <template id="report_sale_order_line_cpq"
+            inherit_id="sale.report_saleorder_document"
+            priority="15">
+    <xpath expr="//t[@t-foreach='lines_to_report']" position="inside">
+      <t t-if="line.is_dim_config and line.dim_configuration_id">
+        <tr>
+          <td colspan="100"
+              style="padding: 4px 8px 6px 24px; font-size: 10px; color: #555; background: #f8f9fa; border-top: none;">
+            <t t-set="breakdown" t-value="line.dim_configuration_id.get_pdf_breakdown()"/>
+            <t t-foreach="breakdown['lines']" t-as="bdl">
+              <div style="display:flex; justify-content:space-between; padding:1px 0; max-width:460px;">
+                <span><t t-out="bdl['label']"/></span>
+                <span t-if="bdl['amount'] is not False" style="font-weight:500; margin-left:16px; white-space:nowrap;">
+                  <t t-out="'+ %.2f €' % bdl['amount'] if bdl['amount'] else ''"/>
+                </span>
+              </div>
+            </t>
+          </td>
+        </tr>
+      </t>
+    </xpath>
+  </template>
+</odoo>

@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+  <!-- Attribute Value list (inline depuis formulaire attribut) -->
+  <record id="view_cpq_attribute_value_list" model="ir.ui.view">
+    <field name="name">dimension_config.attribute.value.list</field>
+    <field name="model">dimension_config.attribute.value</field>
+    <field name="arch" type="xml">
+      <list editable="bottom" string="Values">
+        <field name="sequence" widget="handle"/>
+        <field name="name"/>
+        <field name="surcharge" string="Surcharge"/>
+        <field name="is_default"/>
+      </list>
+    </field>
+  </record>
+
+  <!-- Attribute Form -->
+  <record id="view_cpq_attribute_form" model="ir.ui.view">
+    <field name="name">dimension_config.attribute.form</field>
+    <field name="model">dimension_config.attribute</field>
+    <field name="arch" type="xml">
+      <form string="Attribute">
+        <sheet>
+          <group>
+            <group>
+              <field name="name"/>
+              <field name="attribute_type"/>
+              <field name="sequence"/>
+              <field name="is_required"/>
+            </group>
+            <group>
+              <field name="numeric_min"     invisible="attribute_type != 'numeric'"/>
+              <field name="numeric_max"     invisible="attribute_type != 'numeric'"/>
+              <field name="numeric_unit"    invisible="attribute_type != 'numeric'"/>
+              <field name="numeric_default" invisible="attribute_type != 'numeric'"/>
+              <field name="bool_surcharge"  invisible="attribute_type != 'boolean'"/>
+              <field name="bool_default"    invisible="attribute_type != 'boolean'"/>
+            </group>
+          </group>
+          <separator string="Values" invisible="attribute_type != 'list'"/>
+          <field name="value_ids" invisible="attribute_type != 'list'"/>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <!-- Product Form -->
+  <record id="view_cpq_product_form" model="ir.ui.view">
+    <field name="name">dimension_config.product.form</field>
+    <field name="model">dimension_config.product</field>
+    <field name="arch" type="xml">
+      <form string="Configurable Dimension Product">
+        <sheet>
+          <div class="oe_title">
+            <label for="name"/>
+            <h1><field name="name" placeholder="Configurable product name"/></h1>
+          </div>
+          <group>
+            <group><field name="product_tmpl_id" options="{'no_create': True}"/></group>
+            <group><field name="active" widget="boolean_toggle"/></group>
+          </group>
+
+          <notebook>
+
+            <!-- Pricing -->
+            <page string="Pricing" name="pricing">
+              <group string="Pricing Mode" col="1">
+                <field name="price_mode" widget="radio" nolabel="1" class="o_dim_pricing_mode"/>
+              </group>
+              <div class="mb-3" invisible="price_mode == 'fixed'">
+                <div class="text-muted small">Price formula</div>
+                <div class="fw-bold"><field name="price_formula" readonly="1" nolabel="1"/></div>
+              </div>
+              <group string="Parameters" invisible="price_mode == 'fixed'">
+                <group>
+                  <field name="dimension_uom" string="Salesperson enters dimensions in"/>
+                </group>
+                <group>
+                  <field name="price_per_m2" invisible="price_mode != 'per_m2'" string="Fallback Rate (/m2)"/>
+                  <field name="price_per_m3" invisible="price_mode != 'per_m3'" string="Fallback Rate (/m3)"/>
+                  <field name="price_per_kg" invisible="price_mode != 'per_kg'" string="Fallback Rate (/kg)"/>
+                  <field name="price_per_linear" invisible="price_mode != 'per_linear'" string="Fallback Rate (/m)"/>
+                </group>
+              </group>
+              <div class="alert alert-warning" role="alert"
+                   invisible="not pricing_warning">
+                <field name="pricing_warning" readonly="1" nolabel="1"/>
+              </div>
+            </page>
+
+            <!-- Attributes -->
+            <page string="Attributes" name="attributes">
+              <div class="alert alert-info py-2 mb-3" role="alert" invisible="price_mode == 'fixed'">
+                Create one line per parameter your salesperson will fill in.
+                Use the <b>Role in the formula</b> column to designate which lines
+                are the dimensions (x, y, z) and which one carries the material rate.
+                Lines without a role are simply options.
+              </div>
+              <field name="attribute_ids"
+                     context="{'default_attribute_type': 'list'}">
+                <list editable="bottom">
+                  <field name="sequence" widget="handle"/>
+                  <field name="name"/>
+                  <field name="role" string="Role in the formula"
+                         column_invisible="parent.price_mode == 'fixed'"/>
+                  <field name="attribute_type"/>
+                  <field name="numeric_unit" invisible="attribute_type != 'numeric'"/>
+                  <field name="numeric_min"  invisible="attribute_type != 'numeric'"/>
+                  <field name="numeric_max"  invisible="attribute_type != 'numeric'"/>
+                  <field name="is_required"/>
+                </list>
+              </field>
+            </page>
+
+            <!-- Material Grades
+                 Règle : valeurs dont is_material_value = True
+                 = l'attribut désigné dans "Material Grade Attribute" (onglet Pricing).
+                 Rate = colonne unique adaptative (€/kg en mode per_kg, €/m2 en mode per_m2).
+            -->
+            <page string="Material Grades" name="material_grades">
+              <div class="alert alert-info py-2 mb-3" role="alert">
+                Each material carries its own rate, expressed in the unit of the
+                selected pricing mode (per m2, m3, kg or linear meter). It overrides
+                the fallback rate set on the Pricing tab.
+                <b>Density is only used by the per-kg mode.</b>
+              </div>
+              <p class="text-muted fst-italic mb-3"
+                 invisible="material_attribute_id != False">
+                No attribute has the <b>Material</b> role yet.
+                Open the Attributes tab and set the "Role in the formula" column
+                to <b>Material</b> on the relevant line.
+              </p>
+              <field name="material_value_ids"
+                     invisible="not material_attribute_id"
+                     context="{'default_attribute_id': material_attribute_id,
+                                'default_is_material_value': True,
+                                'default_is_option_value': False}">
+                <list editable="bottom">
+                  <field name="sequence" widget="handle"/>
+                  <field name="attribute_id" readonly="1" force_save="1"
+                         string="Attribute" optional="show"/>
+                  <field name="name" string="Grade"/>
+                  <field name="density" string="Density (kg/m3)"
+                         column_invisible="parent.price_mode != 'per_kg'"/>
+                  <field name="display_price" string="Rate"/>
+                  <field name="price_unit" readonly="1" string="Unit"/>
+                  <field name="is_default"/>
+                </list>
+              </field>
+            </page>
+
+            <!-- Options and Surcharges
+                 Règle : valeurs dont is_option_value = True
+                 = attributs liste AUTRES que le Material Grade.
+                 Un attribut ne peut pas être dans les deux onglets simultanément :
+                 dès qu'il est désigné comme "Material Grade Attribute", ses valeurs
+                 passent dans l'onglet Material Grades.
+            -->
+            <!-- Options and Surcharges
+                 Regle : regroupe dans un seul onglet TOUS les surcoûts optionnels
+                 - Valeurs de type liste (hors grade matiere) avec surcharge
+                 - Attributs Yes/No avec surcharge si Oui
+                 La designation dans "Material Grade Attribute" (onglet Pricing) determine
+                 si un attribut liste va ici ou dans Material Grades.
+            -->
+            <page string="Options and Surcharges" name="options_surcharges">
+
+              <!-- Section 1 : valeurs liste avec surcharge -->
+              <separator string="List Options"/>
+              <p class="text-muted fst-italic mb-2">
+                Values of list-type attributes (other than the Material Grade).
+                Create list-type attributes in the Attributes tab first.
+              </p>
+              <field name="option_value_ids"
+                     context="{'default_is_option_value': True,
+                                'default_is_material_value': False}">
+                <list editable="bottom">
+                  <field name="sequence" widget="handle"/>
+                  <field name="attribute_id"
+                         string="Attribute"
+                         domain="[('dim_product_id', '=', parent.id),
+                                   ('attribute_type', '=', 'list'),
+                                   ('id', '!=', parent.material_attribute_id)]"
+                         options="{'no_create': True}"/>
+                  <field name="name" string="Value"/>
+                  <field name="surcharge" string="Surcharge (EUR)"/>
+                  <field name="is_default"/>
+                </list>
+              </field>
+
+              <!-- Section 2 : attributs Yes/No avec surcharge
+                   Les attributs Yes/No sont CREES dans l'onglet Attributes.
+                   Ils apparaissent ici automatiquement.
+                   Cette section permet uniquement de configurer leur surcharge.
+              -->
+              <separator string="Yes / No Options" class="mt-4"/>
+              <p class="text-muted fst-italic mb-2">
+                Boolean options created in the Attributes tab appear here automatically.
+                Configure the surcharge for each one below.
+              </p>
+              <field name="boolean_attribute_ids">
+                <list editable="bottom" create="false" delete="false">
+                  <field name="sequence" widget="handle"/>
+                  <field name="name" string="Option" readonly="1"/>
+                  <field name="bool_surcharge" string="Surcharge if Yes (EUR)"/>
+                  <field name="bool_default" string="On by default"/>
+                </list>
+              </field>
+
+            </page>
+
+            <!-- Notes -->
+            <page string="Notes" name="notes">
+              <field name="notes" placeholder="Internal notes..."/>
+            </page>
+
+            <!-- Extensions disponibles -->
+            <page string="Add-ons" name="addons">
+              <div class="alert alert-info py-2 mb-3" role="alert">
+                This module is complete and free on its own. The extensions below
+                cover needs that only part of our users have, and are published
+                separately on the Odoo Apps Store.
+              </div>
+              <div class="row">
+                <div class="col-lg-6 mb-3">
+                  <div class="border rounded p-3 h-100">
+                    <h5 class="mb-1">Conditional Logic</h5>
+                    <div class="text-muted small mb-2">
+                      dimension_product_configurator_cond
+                    </div>
+                    <p class="mb-2">
+                      Make the configurator react to what the salesperson selects:
+                      hide an option when another one is chosen, hide a whole
+                      parameter, force a value, or force a yes/no answer.
+                      Unlimited rules per product.
+                    </p>
+                    <p class="text-muted small mb-0">
+                      Useful when some combinations are technically impossible
+                      and you would rather prevent the error than correct the quote.
+                    </p>
+                  </div>
+                </div>
+                <div class="col-lg-6 mb-3">
+                  <div class="border rounded p-3 h-100">
+                    <h5 class="mb-1">Manufacturing BOM</h5>
+                    <div class="text-muted small mb-2">
+                      dimension_product_configurator_bom
+                    </div>
+                    <p class="mb-2">
+                      Turn a confirmed configuration into a bill of materials and a
+                      cutting list, sized from the dimensions entered on the
+                      quotation, ready for Odoo Manufacturing.
+                    </p>
+                    <p class="text-muted small mb-0">
+                      Useful when the quotation has to drive production, not just
+                      the price.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <p class="text-muted small mb-0">
+                Search their technical name on the Odoo Apps Store to install them.
+                Neither is required: this module works fully without them.
+              </p>
+            </page>
+
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <!-- Product List -->
+  <record id="view_cpq_product_list" model="ir.ui.view">
+    <field name="name">dimension_config.product.list</field>
+    <field name="model">dimension_config.product</field>
+    <field name="arch" type="xml">
+      <list string="Dimension Products">
+        <field name="name"/>
+        <field name="product_tmpl_id"/>
+        <field name="price_mode"/>
+        <field name="active"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="action_dim_product" model="ir.actions.act_window">
+    <field name="name">Dimension Products</field>
+    <field name="res_model">dimension_config.product</field>
+    <field name="view_mode">list,form</field>
+  </record>
+
+</odoo>
+
+
+
+
+
+
+
+

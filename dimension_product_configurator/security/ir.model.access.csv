@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_dim_cfg_product_user,dimension_config.product user,model_dimension_config_product,base.group_user,1,1,1,1
+access_dim_cfg_attribute_user,dimension_config.attribute user,model_dimension_config_attribute,base.group_user,1,1,1,1
+access_dim_cfg_attribute_value_user,dimension_config.attribute.value user,model_dimension_config_attribute_value,base.group_user,1,1,1,1
+access_dim_cfg_configuration_user,dimension_config.configuration user,model_dimension_config_configuration,base.group_user,1,1,1,1
+access_dim_cfg_configuration_value_user,dimension_config.configuration.value user,model_dimension_config_configuration_value,base.group_user,1,1,1,1
+access_dim_cfg_configurator_wizard_user,dimension_config.configurator.wizard user,model_dimension_config_configurator_wizard,base.group_user,1,1,1,1
+access_dim_cfg_configurator_wizard_line_user,dimension_config.configurator.wizard.line user,model_dimension_config_configurator_wizard_line,base.group_user,1,1,1,1
+access_dim_cfg_line_selector_user,dimension_config.line.selector user,model_dimension_config_line_selector,base.group_user,1,1,1,1

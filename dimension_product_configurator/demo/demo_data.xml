@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data noupdate="1">
+
+    <!-- ═══════════════ 1. WINDOW — priced per m2, entered in cm ═══════════ -->
+    <record id="product_tmpl_window" model="product.template">
+      <field name="name">Made-to-measure Window</field>
+      <field name="type">consu</field>
+      <field name="description_sale">Configurable window - price calculated per square meter from width, height and frame material.</field>
+    </record>
+
+    <record id="dim_product_window" model="dimension_config.product">
+      <field name="name">Made-to-measure Window</field>
+      <field name="product_tmpl_id" ref="product_tmpl_window"/>
+      <field name="price_mode">per_m2</field>
+      <field name="dimension_uom">cm</field>
+    </record>
+
+    <record id="win_attr_width" model="dimension_config.attribute">
+      <field name="role">x</field>
+      <field name="dim_product_id" ref="dim_product_window"/>
+      <field name="name">Width</field>
+      <field name="attribute_type">numeric</field>
+      <field name="numeric_min">30</field>
+      <field name="numeric_max">400</field>
+      <field name="numeric_unit">cm</field>
+      <field name="numeric_default">120</field>
+      <field name="sequence">10</field>
+    </record>
+    <record id="win_attr_height" model="dimension_config.attribute">
+      <field name="role">y</field>
+      <field name="dim_product_id" ref="dim_product_window"/>
+      <field name="name">Height</field>
+      <field name="attribute_type">numeric</field>
+      <field name="numeric_min">30</field>
+      <field name="numeric_max">300</field>
+      <field name="numeric_unit">cm</field>
+      <field name="numeric_default">90</field>
+      <field name="sequence">20</field>
+    </record>
+    <record id="win_attr_material" model="dimension_config.attribute">
+      <field name="role">material</field>
+      <field name="dim_product_id" ref="dim_product_window"/>
+      <field name="name">Frame Material</field>
+      <field name="attribute_type">list</field>
+      <field name="sequence">30</field>
+    </record>
+    <record id="win_mat_pvc" model="dimension_config.attribute.value">
+      <field name="attribute_id" ref="win_attr_material"/>
+      <field name="name">PVC</field>
+      <field name="price_per_m2">210.00</field>
+      <field name="is_default" eval="True"/>
+      <field name="sequence">10</field>
+    </record>
+    <record id="win_mat_alu" model="dimension_config.attribute.value">
+      <field name="attribute_id" ref="win_attr_material"/>
+      <field name="name">Aluminium</field>
+      <field name="price_per_m2">320.00</field>
+      <field name="sequence">20</field>
+    </record>
+    <record id="win_mat_oak" model="dimension_config.attribute.value">
+      <field name="attribute_id" ref="win_attr_material"/>
+      <field name="name">Oak</field>
+      <field name="price_per_m2">450.00</field>
+      <field name="sequence">30</field>
+    </record>
+    <record id="win_attr_glazing" model="dimension_config.attribute">
+      <field name="dim_product_id" ref="dim_product_window"/>
+      <field name="name">Glazing</field>
+      <field name="attribute_type">list</field>
+      <field name="sequence">40</field>
+    </record>
+    <record id="win_glaz_double" model="dimension_config.attribute.value">
+      <field name="attribute_id" ref="win_attr_glazing"/>
+      <field name="name">Double glazing</field>
+      <field name="surcharge">0.00</field>
+      <field name="is_default" eval="True"/>
+      <field name="sequence">10</field>
+    </record>
+    <record id="win_glaz_triple" model="dimension_config.attribute.value">
+      <field name="attribute_id" ref="win_attr_glazing"/>
+      <field name="name">Triple glazing</field>
+      <field name="surcharge">85.00</field>
+      <field name="sequence">20</field>
+    </record>
+    <record id="win_attr_install" model="dimension_config.attribute">
+      <field name="dim_product_id" ref="dim_product_window"/>
+      <field name="name">On-site installation</field>
+      <field name="attribute_type">boolean</field>
+      <field name="bool_surcharge">120.00</field>
+      <field name="is_required" eval="False"/>
+      <field name="sequence">50</field>
+    </record>
+
+    <!-- ═══════════════ 2. COUNTERTOP — priced per m3, entered in mm ═══════ -->
+    <record id="product_tmpl_countertop" model="product.template">
+      <field name="name">Solid Wood Countertop</field>
+      <field name="type">consu</field>
+      <field name="description_sale">Configurable countertop - price calculated per cubic meter from length, width and thickness.</field>
+    </record>
+
+    <record id="dim_product_countertop" model="dimension_config.product">
+      <field name="name">Solid Wood Countertop</field>
+      <field name="product_tmpl_id" ref="product_tmpl_countertop"/>
+      <field name="price_mode">per_m3</field>
+      <field name="dimension_uom">mm</field>
+    </record>
+
+    <record id="cnt_attr_length" model="dimension_config.attribute">
+      <field name="role">x</field>
+      <field name="dim_product_id" ref="dim_product_countertop"/>
+      <field name="name">Length</field>
+      <field name="attribute_type">numeric</field>
+      <field name="numeric_min">300</field>
+      <field name="numeric_max">4000</field>
+      <field name="numeric_unit">mm</field>
+      <field name="numeric_default">2400</field>
+      <field name="sequence">10</field>
+    </record>
+    <record id="cnt_attr_width" model="dimension_config.attribute">
+      <field name="role">y</field>
+      <field name="dim_product_id" ref="dim_product_countertop"/>
+      <field name="name">Depth</field>
+      <field name="attribute_type">numeric</field>
+      <field name="numeric_min">200</field>
+      <field name="numeric_max">1200</field>
+      <field name="numeric_unit">mm</field>
+      <field name="numeric_default">650</field>
+      <field name="sequence">20</field>
+    </record>
+    <record id="cnt_attr_thickness" model="dimension_config.attribute">
+      <field name="role">z</field>
+      <field name="dim_product_id" ref="dim_product_countertop"/>
+      <field name="name">Thickness</field>
+      <field name="attribute_type">numeric</field>
+      <field name="numeric_min">18</field>
+      <field name="numeric_max">100</field>
+      <field name="numeric_unit">mm</field>
+      <field name="numeric_default">40</field>
+      <field name="sequence">30</field>
+    </record>
+    <record id="cnt_attr_species" model="dimension_config.attribute">
+      <field name="role">material</field>
+      <field name="dim_product_id" ref="dim_product_countertop"/>
+      <field name="name">Wood Species</field>
+      <field name="attribute_type">list</field>
+      <field name="sequence">40</field>
+    </record>
+    <record id="cnt_sp_beech" model="dimension_config.attribute.value">
+      <field name="attribute_id" ref="cnt_attr_species"/>
+      <field name="name">Beech</field>
+      <field name="price_per_m3">1800.00</field>
+      <field name="is_default" eval="True"/>
+      <field name="sequence">10</field>
+    </record>
+    <record id="cnt_sp_oak" model="dimension_config.attribute.value">
+      <field name="attribute_id" ref="cnt_attr_species"/>
+      <field name="name">Oak</field>
+      <field name="price_per_m3">2600.00</field>
+      <field name="sequence">20</field>
+    </record>
+    <record id="cnt_sp_walnut" model="dimension_config.attribute.value">
+      <field name="attribute_id" ref="cnt_attr_species"/>
+      <field name="name">Walnut</field>
+      <field name="price_per_m3">4200.00</field>
+      <field name="sequence">30</field>
+    </record>
+    <record id="cnt_attr_oiled" model="dimension_config.attribute">
+      <field name="dim_product_id" ref="dim_product_countertop"/>
+      <field name="name">Oiled finish</field>
+      <field name="attribute_type">boolean</field>
+      <field name="bool_surcharge">45.00</field>
+      <field name="is_required" eval="False"/>
+      <field name="sequence">50</field>
+    </record>
+
+    <!-- ═══════════════ 3. STEEL SHEET — priced per kg, entered in mm ══════ -->
+    <record id="product_tmpl_steel" model="product.template">
+      <field name="name">Cut-to-size Steel Sheet</field>
+      <field name="type">consu</field>
+      <field name="description_sale">Configurable steel sheet - weight and price calculated from length, width, thickness and material density.</field>
+    </record>
+
+    <record id="dim_product_steel" model="dimension_config.product">
+      <field name="name">Cut-to-size Steel Sheet</field>
+      <field name="product_tmpl_id" ref="product_tmpl_steel"/>
+      <field name="price_mode">per_kg</field>
+      <field name="dimension_uom">mm</field>
+    </record>
+
+    <record id="stl_attr_length" model="dimension_config.attribute">
+      <field name="role">x</field>
+      <field name="dim_product_id" ref="dim_product_steel"/>
+      <field name="name">Length</field>
+      <field name="attribute_type">numeric</field>
+      <field name="numeric_min">10</field>
+      <field name="numeric_max">6000</field>
+      <field name="numeric_unit">mm</field>
+      <field name="numeric_default">1000</field>
+      <field name="sequence">10</field>
+    </record>
+    <record id="stl_attr_width" model="dimension_config.attribute">
+      <field name="role">y</field>
+      <field name="dim_product_id" ref="dim_product_steel"/>
+      <field name="name">Width</field>
+      <field name="attribute_type">numeric</field>
+      <field name="numeric_min">10</field>
+      <field name="numeric_max">3000</field>
+      <field name="numeric_unit">mm</field>
+      <field name="numeric_default">500</field>
+      <field name="sequence">20</field>
+    </record>
+    <record id="stl_attr_thickness" model="dimension_config.attribute">
+      <field name="role">z</field>
+      <field name="dim_product_id" ref="dim_product_steel"/>
+      <field name="name">Thickness</field>
+      <field name="attribute_type">numeric</field>
+      <field name="numeric_min">1</field>
+      <field name="numeric_max">50</field>
+      <field name="numeric_unit">mm</field>
+      <field name="numeric_default">3</field>
+      <field name="sequence">30</field>
+    </record>
+    <record id="stl_attr_grade" model="dimension_config.attribute">
+      <field name="role">material</field>
+      <field name="dim_product_id" ref="dim_product_steel"/>
+      <field name="name">Material Grade</field>
+      <field name="attribute_type">list</field>
+      <field name="sequence">40</field>
+    </record>
+    <record id="stl_gr_s235" model="dimension_config.attribute.value">
+      <field name="attribute_id" ref="stl_attr_grade"/>
+      <field name="name">Mild steel S235</field>
+      <field name="density">7850</field>
+      <field name="price_per_kg">1.45</field>
+      <field name="is_default" eval="True"/>
+      <field name="sequence">10</field>
+    </record>
+    <record id="stl_gr_inox" model="dimension_config.attribute.value">
+      <field name="attribute_id" ref="stl_attr_grade"/>
+      <field name="name">Stainless steel 304</field>
+      <field name="density">8000</field>
+      <field name="price_per_kg">4.20</field>
+      <field name="sequence">20</field>
+    </record>
+    <record id="stl_gr_alu" model="dimension_config.attribute.value">
+      <field name="attribute_id" ref="stl_attr_grade"/>
+      <field name="name">Aluminium 5754</field>
+      <field name="density">2700</field>
+      <field name="price_per_kg">6.10</field>
+      <field name="sequence">30</field>
+    </record>
+    <record id="stl_attr_deburr" model="dimension_config.attribute">
+      <field name="dim_product_id" ref="dim_product_steel"/>
+      <field name="name">Deburring</field>
+      <field name="attribute_type">boolean</field>
+      <field name="bool_surcharge">15.00</field>
+      <field name="is_required" eval="False"/>
+      <field name="sequence">50</field>
+    </record>
+
+  </data>
+</odoo>
