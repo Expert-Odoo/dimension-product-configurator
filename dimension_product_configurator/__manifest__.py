@@ -1,6 +1,6 @@
 {
     'name': 'Dimension Product Configurator | Square Meter & Volume Pricing | Height \u00d7 Width',
-    'version': '19.0.1.0.0',
+    'version': '20.0.1.0.0',
     'category': 'Sales/Sales',
     'summary': 'Sell products by dimensions: enter height, width and depth, get the price per m\u00b2, m\u00b3, kg or linear meter instantly in Odoo Sales.',
     'description': 'static/description/index.html',
@@ -10,7 +10,7 @@
     'license': 'LGPL-3',
     'depends': ['sale_management'],
     'data': [
-        'security/ir.model.access.csv',
+        'security/ir.access.csv',
         'views/dimension_product_views.xml',
         'views/dimension_configuration_views.xml',
         'views/dimension_configurator_views.xml',
