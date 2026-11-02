@@ -52,7 +52,7 @@ class CpqProduct(models.Model):
         compute='_compute_role_attributes', store=True,
     )
     material_attribute_id = fields.Many2one(
-        'dimension_config.attribute', string='Material',
+        'dimension_config.attribute', string='Rate Attribute',
         compute='_compute_role_attributes', store=True,
     )
 
@@ -69,7 +69,7 @@ class CpqProduct(models.Model):
     )
     material_value_ids = fields.One2many(
         'dimension_config.attribute.value', 'dim_product_id',
-        string='Material Grades',
+        string='Rates',
         domain=[('is_material_value', '=', True)],
     )
     option_value_ids = fields.One2many(
@@ -209,24 +209,24 @@ class CpqProduct(models.Model):
                 if not p.width_attribute_id: msgs.append('No attribute has the y role.')
                 if not p.thickness_attribute_id: msgs.append('No attribute has the z role.')
                 if not p.material_attribute_id and not p.price_per_kg:
-                    msgs.append('No attribute has the Material role, and no Fallback Rate (/kg) is set.')
+                    msgs.append('No attribute has the Rate role, and no Fallback Rate (/kg) is set.')
                 elif _no_rate_anywhere('price_per_kg', p.price_per_kg):
-                    msgs.append('No Material Grade has a Rate (/kg) set, and no Base Rate (/kg) is defined.')
+                    msgs.append('No Rate value has a Rate (/kg) set, and no Base Rate (/kg) is defined.')
             elif p.price_mode == 'per_m2':
                 if not p.length_attribute_id: msgs.append('No attribute has the x role.')
                 if not p.width_attribute_id: msgs.append('No attribute has the y role.')
                 if not p.material_attribute_id and not p.price_per_m2:
-                    msgs.append('No attribute has the Material role, and no Fallback Rate (/m2) is set.')
+                    msgs.append('No attribute has the Rate role, and no Fallback Rate (/m2) is set.')
                 elif _no_rate_anywhere('price_per_m2', p.price_per_m2):
-                    msgs.append('No Material Grade has a Rate (/m2) set, and no Base Rate (/m2) is defined.')
+                    msgs.append('No Rate value has a Rate (/m2) set, and no Base Rate (/m2) is defined.')
             elif p.price_mode == 'per_m3':
                 if not p.length_attribute_id: msgs.append('No attribute has the x role.')
                 if not p.width_attribute_id: msgs.append('No attribute has the y role.')
                 if not p.thickness_attribute_id: msgs.append('No attribute has the z role.')
                 if not p.material_attribute_id and not p.price_per_m3:
-                    msgs.append('No attribute has the Material role, and no Fallback Rate (/m3) is set.')
+                    msgs.append('No attribute has the Rate role, and no Fallback Rate (/m3) is set.')
                 elif _no_rate_anywhere('price_per_m3', p.price_per_m3):
-                    msgs.append('No Material has a Rate (/m3) set, and no Base Rate (/m3) is defined.')
+                    msgs.append('No Rate value has a Rate (/m3) set, and no Base Rate (/m3) is defined.')
             # Un defaut a zero ou une liste sans valeur cochee font afficher
             # 0,00 a l'ouverture du configurateur : on le signale.
             if p.price_mode != 'fixed':
@@ -246,9 +246,9 @@ class CpqProduct(models.Model):
             if p.price_mode == 'per_linear':
                 if not p.length_attribute_id: msgs.append('No attribute has the x role.')
                 if not p.material_attribute_id and not p.price_per_linear:
-                    msgs.append('No attribute has the Material role, and no Fallback Rate (/m) is set.')
+                    msgs.append('No attribute has the Rate role, and no Fallback Rate (/m) is set.')
                 elif _no_rate_anywhere('price_per_linear', p.price_per_linear):
-                    msgs.append('No Material Grade has a Rate (/m) set, and no Base Rate (/m) is defined.')
+                    msgs.append('No Rate value has a Rate (/m) set, and no Base Rate (/m) is defined.')
             p.pricing_warning = '  \u26a0  ' + '  \u00b7  '.join(msgs) if msgs else False
 
 
@@ -269,7 +269,7 @@ class CpqAttribute(models.Model):
         ('x',        'x  (1st dimension)'),
         ('y',        'y  (2nd dimension)'),
         ('z',        'z  (3rd dimension)'),
-        ('material', 'Material'),
+        ('material', 'Rate'),
     ], string='Role in the formula',
         help="Designates the part this attribute plays in the price formula. "
              "Leave empty for options that only add a surcharge.")
@@ -415,7 +415,7 @@ class CpqAttributeValue(models.Model):
     price_per_linear  = fields.Float('Rate per linear meter', default=0.0)
 
     is_material_value = fields.Boolean(
-        'Is Material Grade', compute='_compute_material_flags', store=True, index=True,
+        'Is Rate Value', compute='_compute_material_flags', store=True, index=True,
     )
     is_option_value = fields.Boolean(
         'Is Option/Surcharge', compute='_compute_material_flags', store=True, index=True,

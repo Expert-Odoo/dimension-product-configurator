@@ -94,7 +94,8 @@
               <div class="alert alert-info py-2 mb-3" role="alert" invisible="price_mode == 'fixed'">
                 Create one line per parameter your salesperson will fill in.
                 Use the <b>Role in the formula</b> column to designate which lines
-                are the dimensions (x, y, z) and which one carries the material rate.
+                are the dimensions (x, y, z) and which one carries the <b>Rate</b>.
+                The Rate attribute's selected value sets the unit price (per m2, m3, kg or meter), often driven by the material.
                 Lines without a role are simply options.
               </div>
               <field name="attribute_ids"
@@ -118,18 +119,18 @@
                  = l'attribut désigné dans "Material Grade Attribute" (onglet Pricing).
                  Rate = colonne unique adaptative (€/kg en mode per_kg, €/m2 en mode per_m2).
             -->
-            <page string="Material Grades" name="material_grades">
+            <page string="Rates" name="material_grades">
               <div class="alert alert-info py-2 mb-3" role="alert">
-                Each material carries its own rate, expressed in the unit of the
+                Each value of the Rate attribute carries its own rate, expressed in the unit of the
                 selected pricing mode (per m2, m3, kg or linear meter). It overrides
                 the fallback rate set on the Pricing tab.
                 <b>Density is only used by the per-kg mode.</b>
               </div>
               <p class="text-muted fst-italic mb-3"
                  invisible="material_attribute_id != False">
-                No attribute has the <b>Material</b> role yet.
+                No attribute has the <b>Rate</b> role yet.
                 Open the Attributes tab and set the "Role in the formula" column
-                to <b>Material</b> on the relevant line.
+                to <b>Rate</b> on the relevant line.
               </p>
               <field name="material_value_ids"
                      invisible="not material_attribute_id"
@@ -140,7 +141,7 @@
                   <field name="sequence" widget="handle"/>
                   <field name="attribute_id" readonly="1" force_save="1"
                          string="Attribute" optional="show"/>
-                  <field name="name" string="Grade"/>
+                  <field name="name" string="Value"/>
                   <field name="density" string="Density (kg/m3)"
                          column_invisible="parent.price_mode != 'per_kg'"/>
                   <field name="display_price" string="Rate"/>
@@ -169,7 +170,7 @@
               <!-- Section 1 : valeurs liste avec surcharge -->
               <separator string="List Options"/>
               <p class="text-muted fst-italic mb-2">
-                Values of list-type attributes (other than the Material Grade).
+                Values of list-type attributes (other than the Rate attribute).
                 Create list-type attributes in the Attributes tab first.
               </p>
               <field name="option_value_ids"
