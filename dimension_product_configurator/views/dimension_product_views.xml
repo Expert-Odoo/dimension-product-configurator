@@ -129,9 +129,9 @@
               </div>
               <p class="text-muted fst-italic mb-3"
                  invisible="material_attribute_id != False">
-                No attribute has the <b>Rate</b> role yet.
-                Open the Attributes tab and set the "Role in the formula" column
-                to <b>Rate</b> on the relevant line.
+                To define rates, give an attribute the <b>Rate</b> role in the
+                Attributes tab and <b>save</b>. Each Rate value's price is then
+                edited here.
               </p>
               <field name="material_value_ids"
                      invisible="not material_attribute_id"
