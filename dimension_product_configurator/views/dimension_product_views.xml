@@ -57,7 +57,7 @@
             <h1><field name="name" placeholder="Configurable product name"/></h1>
           </div>
           <group>
-            <group><field name="product_tmpl_id" options="{'no_create': True}"/></group>
+            <group><field name="product_tmpl_id"/></group>
             <group><field name="active" widget="boolean_toggle"/></group>
           </group>
 
