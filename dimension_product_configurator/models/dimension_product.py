@@ -55,13 +55,17 @@ class CpqProduct(models.Model):
         'dimension_config.attribute', string='Rate Attribute',
         compute='_compute_role_attributes', store=True,
     )
+    # Drapeau NON stocke recalcule a chaque onchange (contrairement au champ
+    # calcule stocke ci-dessus, un scalaire non stocke EST bien renvoye au
+    # navigateur). Il permet a l'onglet Rates d'afficher en direct le bon
+    # message des qu'un attribut recoit le role Rate, avant tout enregistrement.
 
     price_formula = fields.Char(compute='_compute_price_formula', store=False)
 
-    price_per_kg     = fields.Float('Base Rate (/kg)', digits=(10, 2), default=0.0)
-    price_per_m2     = fields.Float('Base Rate (/m2)', digits=(10, 2), default=0.0)
-    price_per_m3     = fields.Float('Base Rate (/m3)', digits=(10, 2), default=0.0)
-    price_per_linear = fields.Float('Base Rate (/m)', digits=(10, 2), default=0.0)
+    price_per_kg     = fields.Float('Fallback Rate (/kg)', digits=(10, 2), default=0.0)
+    price_per_m2     = fields.Float('Fallback Rate (/m2)', digits=(10, 2), default=0.0)
+    price_per_m3     = fields.Float('Fallback Rate (/m3)', digits=(10, 2), default=0.0)
+    price_per_linear = fields.Float('Fallback Rate (/m)', digits=(10, 2), default=0.0)
 
     attribute_ids = fields.One2many(
         'dimension_config.attribute', 'dim_product_id',
@@ -125,6 +129,13 @@ class CpqProduct(models.Model):
             p.thickness_attribute_id = by_role.get('z', False)
             p.material_attribute_id  = by_role.get('material', False)
 
+    @api.onchange('attribute_ids')
+    def _onchange_attribute_roles(self):
+        # Refresh the role-derived fields live in the form so the Rates tab
+        # and the pricing warnings react as soon as a role is set, without
+        # having to save and reload the page.
+        self._compute_role_attributes()
+
     @api.depends('price_mode', 'length_attribute_id', 'width_attribute_id',
                  'thickness_attribute_id', 'material_attribute_id')
     def _compute_price_formula(self):
@@ -146,7 +157,7 @@ class CpqProduct(models.Model):
             if p.price_mode == 'per_kg':
                 parts.append('density')
             mat = p.material_attribute_id.name
-            parts.append('%s rate' % mat if mat else 'base rate')
+            parts.append('%s rate' % mat if mat else 'fallback rate')
             p.price_formula = 'Price = ' + '  x  '.join(parts) + '  + surcharges'
 
     @api.constrains('price_mode', 'attribute_ids')
@@ -211,14 +222,14 @@ class CpqProduct(models.Model):
                 if not p.material_attribute_id and not p.price_per_kg:
                     msgs.append('No attribute has the Rate role, and no Fallback Rate (/kg) is set.')
                 elif _no_rate_anywhere('price_per_kg', p.price_per_kg):
-                    msgs.append('No Rate value has a Rate (/kg) set, and no Base Rate (/kg) is defined.')
+                    msgs.append('No Rate value has a Rate (/kg) set, and no Fallback Rate (/kg) is defined.')
             elif p.price_mode == 'per_m2':
                 if not p.length_attribute_id: msgs.append('No attribute has the x role.')
                 if not p.width_attribute_id: msgs.append('No attribute has the y role.')
                 if not p.material_attribute_id and not p.price_per_m2:
                     msgs.append('No attribute has the Rate role, and no Fallback Rate (/m2) is set.')
                 elif _no_rate_anywhere('price_per_m2', p.price_per_m2):
-                    msgs.append('No Rate value has a Rate (/m2) set, and no Base Rate (/m2) is defined.')
+                    msgs.append('No Rate value has a Rate (/m2) set, and no Fallback Rate (/m2) is defined.')
             elif p.price_mode == 'per_m3':
                 if not p.length_attribute_id: msgs.append('No attribute has the x role.')
                 if not p.width_attribute_id: msgs.append('No attribute has the y role.')
@@ -226,14 +237,14 @@ class CpqProduct(models.Model):
                 if not p.material_attribute_id and not p.price_per_m3:
                     msgs.append('No attribute has the Rate role, and no Fallback Rate (/m3) is set.')
                 elif _no_rate_anywhere('price_per_m3', p.price_per_m3):
-                    msgs.append('No Rate value has a Rate (/m3) set, and no Base Rate (/m3) is defined.')
+                    msgs.append('No Rate value has a Rate (/m3) set, and no Fallback Rate (/m3) is defined.')
             # Un defaut a zero ou une liste sans valeur cochee font afficher
             # 0,00 a l'ouverture du configurateur : on le signale.
             if p.price_mode != 'fixed':
                 zeros = p.attribute_ids.filtered(
                     lambda a: a.role in ('x', 'y', 'z')
                     and a.attribute_type == 'numeric'
-                    and not a.numeric_default)
+                    and not a.numeric_default and not a.numeric_min)
                 if zeros:
                     msgs.append('Set a realistic default value for: %s. '
                                 'Without it the configurator opens at 0.00 and your '
@@ -248,7 +259,7 @@ class CpqProduct(models.Model):
                 if not p.material_attribute_id and not p.price_per_linear:
                     msgs.append('No attribute has the Rate role, and no Fallback Rate (/m) is set.')
                 elif _no_rate_anywhere('price_per_linear', p.price_per_linear):
-                    msgs.append('No Rate value has a Rate (/m) set, and no Base Rate (/m) is defined.')
+                    msgs.append('No Rate value has a Rate (/m) set, and no Fallback Rate (/m) is defined.')
             p.pricing_warning = '  \u26a0  ' + '  \u00b7  '.join(msgs) if msgs else False
 
 

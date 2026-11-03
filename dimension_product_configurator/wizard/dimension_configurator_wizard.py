@@ -37,7 +37,7 @@ class CpqConfiguratorWizard(models.TransientModel):
                 lines.append((0, 0, {
                     'attribute_id':  attr.id,
                     'value_list_id': default_list.id if attr.attribute_type == 'list' and default_list else False,
-                    'value_numeric': attr.numeric_default if attr.attribute_type == 'numeric' else 0.0,
+                    'value_numeric': (attr.numeric_default or attr.numeric_min) if attr.attribute_type == 'numeric' else 0.0,
                     'value_boolean': attr.bool_default    if attr.attribute_type == 'boolean' else False,
                 }))
         if lines:
