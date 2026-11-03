@@ -6,12 +6,12 @@
     <field name="name">dimension_config.attribute.value.list</field>
     <field name="model">dimension_config.attribute.value</field>
     <field name="arch" type="xml">
-      <list editable="bottom" string="Values">
+      <tree editable="bottom" string="Values">
         <field name="sequence" widget="handle"/>
         <field name="name"/>
         <field name="surcharge" string="Surcharge"/>
         <field name="is_default"/>
-      </list>
+      </tree>
     </field>
   </record>
 
@@ -52,6 +52,7 @@
     <field name="arch" type="xml">
       <form string="Configurable Dimension Product">
         <sheet>
+          <field name="material_attribute_id" invisible="1"/>
           <div class="oe_title">
             <label for="name"/>
             <h1><field name="name" placeholder="Configurable product name"/></h1>
@@ -100,7 +101,7 @@
               </div>
               <field name="attribute_ids"
                      context="{'default_attribute_type': 'list'}">
-                <list editable="bottom">
+                <tree editable="bottom">
                   <field name="sequence" widget="handle"/>
                   <field name="name"/>
                   <field name="role" string="Role in the formula"
@@ -110,7 +111,7 @@
                   <field name="numeric_min"  invisible="attribute_type != 'numeric'"/>
                   <field name="numeric_max"  invisible="attribute_type != 'numeric'"/>
                   <field name="is_required"/>
-                </list>
+                </tree>
               </field>
             </page>
 
@@ -137,7 +138,7 @@
                      context="{'default_attribute_id': material_attribute_id,
                                 'default_is_material_value': True,
                                 'default_is_option_value': False}">
-                <list editable="bottom">
+                <tree editable="bottom">
                   <field name="sequence" widget="handle"/>
                   <field name="attribute_id" readonly="1" force_save="1"
                          string="Attribute" optional="show"/>
@@ -147,7 +148,7 @@
                   <field name="display_price" string="Rate"/>
                   <field name="price_unit" readonly="1" string="Unit"/>
                   <field name="is_default"/>
-                </list>
+                </tree>
               </field>
             </page>
 
@@ -176,7 +177,7 @@
               <field name="option_value_ids"
                      context="{'default_is_option_value': True,
                                 'default_is_material_value': False}">
-                <list editable="bottom">
+                <tree editable="bottom">
                   <field name="sequence" widget="handle"/>
                   <field name="attribute_id"
                          string="Attribute"
@@ -187,7 +188,7 @@
                   <field name="name" string="Value"/>
                   <field name="surcharge" string="Surcharge (EUR)"/>
                   <field name="is_default"/>
-                </list>
+                </tree>
               </field>
 
               <!-- Section 2 : attributs Yes/No avec surcharge
@@ -201,12 +202,12 @@
                 Configure the surcharge for each one below.
               </p>
               <field name="boolean_attribute_ids">
-                <list editable="bottom" create="false" delete="false">
+                <tree editable="bottom" create="false" delete="false">
                   <field name="sequence" widget="handle"/>
                   <field name="name" string="Option" readonly="1"/>
                   <field name="bool_surcharge" string="Surcharge if Yes (EUR)"/>
                   <field name="bool_default" string="On by default"/>
-                </list>
+                </tree>
               </field>
 
             </page>
@@ -277,19 +278,19 @@
     <field name="name">dimension_config.product.list</field>
     <field name="model">dimension_config.product</field>
     <field name="arch" type="xml">
-      <list string="Dimension Products">
+      <tree string="Dimension Products">
         <field name="name"/>
         <field name="product_tmpl_id"/>
         <field name="price_mode"/>
         <field name="active"/>
-      </list>
+      </tree>
     </field>
   </record>
 
   <record id="action_dim_product" model="ir.actions.act_window">
     <field name="name">Dimension Products</field>
     <field name="res_model">dimension_config.product</field>
-    <field name="view_mode">list,form</field>
+    <field name="view_mode">tree,form</field>
   </record>
 
 </odoo>
