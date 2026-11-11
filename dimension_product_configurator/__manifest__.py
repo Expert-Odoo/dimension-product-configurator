@@ -1,8 +1,8 @@
 {
-    'name': 'Dimension Product Configurator | Square Meter & Volume Pricing | Height \u00d7 Width',
-    'version': '19.0.1.0.2',
+    'name': 'Product Dimension Pricing, Made to Measure, Cut to Size, Sell by Square Meter m2, Cubic Meter m3, Kg and Linear Meter',
+    'version': '19.0.1.0.3',
     'category': 'Sales/Sales',
-    'summary': 'Sell products by dimensions: enter height, width and depth, get the price per m\u00b2, m\u00b3, kg or linear meter instantly in Odoo Sales.',
+    'summary': 'Sell made to measure and cut to size products: enter height, width and length, get the price by square meter m2, cubic meter m3, kilogram or linear meter on the sale order. Area based and volume based pricing for glass, tile, sheet metal, aluminium, timber, fabric and signage. Dimension product configurator with min and max validation.',
     'description': 'static/description/index.html',
     'author': 'expodo.fr',
     'website': 'https://expodo.fr',
